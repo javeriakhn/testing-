@@ -47,7 +47,9 @@ jobs:
           EC2_IP: ${{ secrets.EC2_IP }}
         run: |
           # Transfer application files
-          scp -i /tmp/ec2_key.pem -o StrictHostKeyChecking=no -r . $EC2_USER@$EC2_IP:/home/ubuntu/testing/
+          scp -i /tmp/ec2_key.pem -o StrictHostKeyChecking=no -r app.py requirements.txt templates/  $EC2_USER@$EC2_IP:/home/ubuntu/testing/
+
+        
           
           
           # SSH into the EC2 instance to set up and run the app

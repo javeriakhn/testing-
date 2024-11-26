@@ -32,16 +32,15 @@ jobs:
         uses: sonarsource/sonarcloud-github-action@v1
         with:
           entryPoint: sonar-scanner
+          projectBaseDir: .
 
       - name: Run SonarQube Analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_URL }}
         run: |
-          sonar-scanner \
+          sonar-scanner -X \
             -Dsonar.projectKey=testing \
-           
-            -Dsonar.host.url=http://3.89.187.92:9000/ \
+            -Dsonar.host.url=http://3.89.187.92:9000 \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
   deploy:
@@ -83,4 +82,3 @@ jobs:
             pkill gunicorn || true
             gunicorn --bind 0.0.0.0:5000 app:app --daemon
           EOF
-

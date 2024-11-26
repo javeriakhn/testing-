@@ -31,13 +31,15 @@ jobs:
       - name: Set up SonarQube Scanner
         uses: sonarsource/sonarcloud-github-action@v1
         with:
-          sonar-token: ${{ secrets.SONAR_TOKEN }}
-          sonar-host-url: ${{ secrets.SONAR_URL }}
+          entryPoint: sonar-scanner
 
       - name: Run SonarQube Analysis
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_URL }}
         run: |
           sonar-scanner \
-            -Dsonar.projectKey=my-flask-app \
+            -Dsonar.projectKey=testing \
            
             -Dsonar.host.url=${{ secrets.SONAR_URL }} \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
@@ -81,3 +83,4 @@ jobs:
             pkill gunicorn || true
             gunicorn --bind 0.0.0.0:5000 app:app --daemon
           EOF
+

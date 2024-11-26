@@ -36,27 +36,34 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Set up SSH key
+        run: |
+          echo "${{ secrets.EC2_KEY }}" > /tmp/ec2_key.pem
+          chmod 600 /tmp/ec2_key.pem
+
       - name: Deploy Flask App to EC2
         env:
-          EC2_KEY: ${{ secrets.EC2_KEY }}
           EC2_USER: ubuntu
           EC2_IP: ${{ secrets.EC2_IP }}
         run: |
-          # Transfer application files to the EC2 instance
-          ssh -i $EC2_KEY ubuntu@ec2-18-212-20-227.compute-1.amazonaws.com << EOF
-            # Update EC2 instance and install dependencies
+          # Transfer application files
+          scp -i /tmp/ec2_key.pem -o StrictHostKeyChecking=no -r . $EC2_USER@$EC2_IP:/home/ubuntu/testing/
+          
+          # SSH into the EC2 instance to set up and run the app
+          ssh -i /tmp/ec2_key.pem -o StrictHostKeyChecking=no $EC2_USER@$EC2_IP << EOF
+            # Update and install dependencies
             sudo apt update
             sudo apt install -y python3-pip python3-venv
-            cd /home/ubuntu/
-            sudo git clone https://github.com/javeriakhn/testing-.git
-            cd testing-
             
-            # Create a virtual environment and install requirements
+            # Navigate to the project directory
+            cd /home/ubuntu/testing/
+            
+            # Create virtual environment and install dependencies
             python3 -m venv venv
             source venv/bin/activate
             pip install -r requirements.txt
             
-            # Start Gunicorn server for the Flask app
-            pkill gunicorn || true  # Stop any running instances of Gunicorn
+            # Restart the application using Gunicorn
+            pkill gunicorn || true
             gunicorn --bind 0.0.0.0:5000 app:app --daemon
           EOF

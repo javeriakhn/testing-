@@ -41,7 +41,7 @@ jobs:
           sonar-scanner \
             -Dsonar.projectKey=testing \
            
-            -Dsonar.host.url=${{ secrets.SONAR_URL }} \
+            -Dsonar.host.url=http://3.89.187.92:9000/ \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
   deploy:

@@ -28,20 +28,16 @@ jobs:
           # Add your test commands here
           echo "Testing is skipped for this simple app"
 
-      - name: Set up SonarQube Scanner
-        uses: sonarsource/sonarcloud-github-action@v1
-        with:
-          entryPoint: sonar-scanner
-          projectBaseDir: .
-
-      - name: Run SonarQube Analysis
+      - name: SonarQube Scan
         env:
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          sonar-scanner -X \
-            -Dsonar.projectKey=testing \
-            -Dsonar.host.url=http://3.89.187.92:9000 \
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+          npm install -g sonarqube-scanner
+          sonar-scanner \
+            -Dsonar.projectKey=Assignment \
+            -Dsonar.host.url=http://3.89.187.92:9000/ \
+            -Dsonar.login=$SONAR_TOKEN
 
   deploy:
     name: Deploy to AWS EC2

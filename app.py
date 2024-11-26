@@ -6,10 +6,10 @@ app = Flask(__name__)
 
 # MySQL database configuration
 db_config = {
-    'host': 'your-db-host',  # Replace with your MySQL database endpoint
-    'user': 'your-db-user',  # Replace with your DB username
-    'password': 'your-db-password',  # Replace with your DB password
-    'database': 'notepad_db'
+    'host': '18.212.20.227',  # Replace with your MySQL endpoint
+    'user': 'root',  # Replace with your MySQL username
+    'password': 'admin123',  # Replace with your MySQL password
+    'database': 'notepad_db'  # Replace with the database name you created
 }
 
 # Function to connect to MySQL
@@ -79,4 +79,4 @@ def delete_note(id):
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
